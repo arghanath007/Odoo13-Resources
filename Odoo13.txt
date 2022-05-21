@@ -1,0 +1,173 @@
+Stagging Link -> https://stage.gowithdot.net
+
+
+In the 'models' folder, we will place all the python related files. In the 'security' folder, we will place all the security related files. In the 'views' folder, we will place all the 'XML' related files. In the 'static' folder, we are going to place all the static files just as pictures, documents which are static and are not changing over time.
+	This is the structure of Odoo, which is an MVC or Model-View-Controller concept.
+
+
+/home/arghanath/odoo13/odoo/addons/crm -> Under this
+
+/controllers -> Contains python files that are used to handle requests from the browser.
+/data -> Has some demo data, configuration data
+/doc -> Change log related to this module
+/i18n -> Internationalization means translation of the module into different languages.
+
+
+
+
+
+To run the Odoo13 server on localhost -> python3 odoo-bin -c odoo13.conf -d RestoredDatabaseMile
+
+auto_assign_order.xml -> This is a Crawler, which means when this is called, it is going to auto-assign orders to bikers.
+
+auto_cancel_order.xml -> This is a Crawler, which means when this is called, it is going to auto-cancel orders.
+
+Access these Crawlers in front-end:-
+1) Turn on Dev mode
+2) Go to setting>Technical>Scheduled Actions
+3) Search for the Name of the Crawler
+
+
+Debug an Odoo application with pdb
+
+1)import pdb; pdb.set_trace()
+2) In the terminal, 'n' to go to the next line.
+
+
+
+
+self.env['dot.order'] -> Think of this like SQL queries but using ORM functions in Odoo. 'dot.order' is the table we are accessing and we are creating an empty environment of it which will let us use the ORM functions on it.
+
+
+
+ORM Methods
+
+1) Search(.search) -> This is used to search for some specific data from the database using some paramaters/conditions
+
+	patients=self.env['hospital.patient'].search([])
+
+		-> It search/returns all of the data present in the 'hospital.patient' model. Since, we have not given any conditions and the 'domain'([]) is empty.
+
+	female_patients_or=self.env['hospital.patient'].search(['|', ('gender', '=', 'fe_male'), ('age', '>=', '25')]) 
+
+		-> '|' means were using the 'OR' operator here. If anyone of the conditions are satisfied then we will add that data to the 'female_patients_or' variable.
+
+
+	female_patients=self.env['hospital.patient'].search([('gender', '=', 'fe_male'), ('age', '>=', '25')]) 
+
+		-> We are by default using the 'AND' operator here. If only both of the conditions are satisfied then we will add that data to the 'female_patients' variable otherwise not. That the logic of 'AND' condtion.
+ 
+
+2) Search Count(.search_count) -> It returns the count based on the criteria/condition given.
+
+	patients=self.env['hospital.patient'].search_count([]) 
+
+		-> Returns the count of the patients.
+
+	female_patients= self.env['hospital.patient'].search_count([('gender','=','fe_male')])
+
+		-> Return the count of the female patients. 
+
+
+3) Reference(.ref) -> This will helps us get the record using external ID. We can reference to a record using it's external ID.
+
+	patient=self,env.ref('om_hospital.patient_xyz')
+
+
+4) Browse(.browse) -> It is similar to search function but it browses for the condition we are finding. The difference between search and browse, is that if the condition doesn't satisfy any data or it is empty then search will return an empty list whereas browse will return the record set, even though it doesn't exist. So to verify what browse has returned we have to use the 'exists' ORM function.
+
+	browse_result = self.env['hospital.patient'].browse(12)
+	browse_result = self.env['hospital.patient'].search([('id', '=', 12)])
+
+
+5) Exists(.exists) -> As we have mentioned above, this function is used to check if the record returned by the browse function actually exists or not. We check that by using the 'exists' ORM function.
+
+	if browse_result.exits():
+		print("Existing")
+
+	else:
+		print('Does not exist')
+
+
+
+6) Create(.create) -> We are creating new data points in that particular table of that model.
+
+	vals={
+		'name': 'Odoo ORM',
+		'email_id': 'john@gmail.com',
+		'phone': '1612147984948'
+	}
+
+	create_record=self.env['hospital.patient'].create(vals)
+
+
+7) Write(.write) -> To update an already created record.
+
+
+	record_to_update=self.env['hospital.patient'].browse(15)
+	if record_to_update.exists():
+
+		vals={
+			'name': 'John Wick',
+			'email_id': 'john@gmail.com',
+			'phone': '7446132464',
+			'note': 'Updating the Name'
+		}
+
+		record_to_update.write(vals)
+
+
+8) Copy(.copy) -> To make a copy of an already created record. Copies the record with 'id=10' and stores it in the 'record_to_copy' variable. 
+
+	record_to_copy= self.env['hospital.patient'].browse(10)
+
+
+
+9) Unlink(.unlink) -> To delete a record from the database using this function.
+
+
+	record_to_delete= self.env['hospital.patient'].browse(10)
+
+	record_to_delete.unlink()
+
+
+
+
+# Bugs in Last-Mile
+
+1) Order Time Fix(Not showing Current Time)
+
+
+
+Testing Workflow before pushing into Production:-
+
+ *Created a Merchant(Argha Merchant) 
+ *Create a Biker
+
+ 1) Create an Order
+ 2) Use the Accept_order Cron so that a biker gets instantly assigned to the Order.
+ 2) Accept/Reject the Order on the App.
+ 3) Click on buttons on the APP.
+ 4) Enter OTP from the Dashboard.
+
+
+
+
+Tasks to Do:-
+
+Create a New Database with these fields.
+id, version, download link.
+
+
+
+To create a Table/Database in Odoo:
+
+1) Create the model file. Then add the fields where are to be displayed in the model.
+2) First create the view in the .xml file
+3) Write the logic for the API calling in the controller folder.
+4) Test the API endpoint using postman.
+
+
+Error:- Token invalid or expired
+
+>Logout from the app and login again. It will fix the problem.
