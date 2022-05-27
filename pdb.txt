@@ -1,0 +1,6 @@
+import pdb; pdb.set_trace()
+
+
+l -> Current line.
+n -> next Line.
+c -> To exit the pdb interface.(Cancel)
